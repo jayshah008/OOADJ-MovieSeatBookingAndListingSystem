@@ -1,0 +1,94 @@
+// Source code is decompiled from a .class file using FernFlower decompiler.
+package controller;
+
+import database.Database;
+import handler.DatabaseHandler;
+import java.util.ArrayList;
+import model.Cinema;
+import model.Cineplex;
+import model.IMaxCinema;
+import model.Movie;
+import model.MovieSchedule;
+import model.PlatinumCinema;
+import model.Seat;
+import model.StandardCinema;
+import model.enums.CinemaClass;
+
+public class CinemaManager {
+   public CinemaManager() {
+   }
+
+   public static Cinema createPlatinumCinema(ArrayList<Seat> var0) {
+      String var1 = String.format("CN%04d", DatabaseHandler.generateUUID(Database.CINEMA));
+      PlatinumCinema var2 = new PlatinumCinema(var1, var0, Database.platinumNumOfRow, Database.platinumNumOfSeatsPerRow * Database.platinumNumOfRow);
+      DatabaseManager.saveUpdateToDatabase(var1, var2, Database.CINEMA);
+      return var2;
+   }
+
+   public static Cinema createStandardCinema(ArrayList<Seat> var0) {
+      String var1 = String.format("CN%04d", DatabaseHandler.generateUUID(Database.CINEMA));
+      StandardCinema var2 = new StandardCinema(var1, var0, Database.numOfRows, Database.totalNumOfSeats);
+      DatabaseManager.saveUpdateToDatabase(var1, var2, Database.CINEMA);
+      return var2;
+   }
+
+   public static Cinema createIMaxCinema(ArrayList<Seat> var0) {
+      String var1 = String.format("CN%04d", DatabaseHandler.generateUUID(Database.CINEMA));
+      IMaxCinema var2 = new IMaxCinema(var1, var0, Database.numOfRows, Database.totalNumOfSeats);
+      DatabaseManager.saveUpdateToDatabase(var1, var2, Database.CINEMA);
+      return var2;
+   }
+
+   public static ArrayList<Cinema> filterCinemaByClass(CinemaClass var0, Cineplex var1) {
+      ArrayList var2 = new ArrayList();
+      ArrayList var3 = var1.getCinemas();
+
+      for(int var4 = 0; var4 < var3.size(); ++var4) {
+         Cinema var5 = (Cinema)var3.get(var4);
+         if (var5.getCinemaClass() == var0) {
+            var2.add(var5);
+         }
+      }
+
+      return var2;
+   }
+
+   public static ArrayList<Cinema> filterCinemaByCineplexMovie(Cineplex var0, Movie var1) {
+      ArrayList var2 = new ArrayList();
+      ArrayList var3 = var0.getCinemas();
+      MovieSchedule var4 = MovieScheduleManager.getMovieScheduleByMovie(var1);
+      ArrayList var5 = var4.getShowingVenues();
+
+      for(int var6 = 0; var6 < var3.size(); ++var6) {
+         Cinema var7 = (Cinema)var3.get(var6);
+
+         for(int var8 = 0; var8 < var5.size(); ++var8) {
+            String var9 = (String)var5.get(var8);
+            if (var7.getUUID().equals(var9)) {
+               var2.add(var7);
+            }
+         }
+      }
+
+      return var2;
+   }
+
+   public static String getCinemaCode(Cinema var0) {
+      String var1 = var0.getUUID();
+      int var2 = var1.length();
+      return var1.substring(var2 - 3);
+   }
+
+   public static Cinema getCinemaByUUID(String var0) {
+      ArrayList var1 = Database.getValueList(Database.CINEMA.values());
+
+      for(int var2 = 0; var2 < var1.size(); ++var2) {
+         Cinema var3 = (Cinema)var1.get(var2);
+         if (var3.getUUID().equals(var0)) {
+            return var3;
+         }
+      }
+
+      return null;
+   }
+}
