@@ -1,6 +1,6 @@
-## Movie Seat Reservation System
+# Movie Seat Reservation System
 
-# TEAM MEMBERS :
+## TEAM MEMBERS :
 
 Jawahar Balachandher ( PES2UG21CS212 )
 
